@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Home,
   Users,
@@ -23,7 +23,13 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('usuario'); // ou sessionStorage
+    router.push('/login');
+  };
 
   return (
     <>
@@ -61,7 +67,10 @@ export default function Sidebar() {
           </nav>
 
           {/* Botão Sair */}
-          <button className="flex items-center gap-2 p-3 rounded-lg text-red-600 hover:bg-red-100">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 p-3 rounded-lg text-red-600 hover:bg-red-100"
+          >
             <LogOut className="w-5 h-5" />
             Sair
           </button>
