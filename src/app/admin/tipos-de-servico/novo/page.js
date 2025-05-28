@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
+
 export default function NovoTipoServico() {
   const router = useRouter();
   const [nome, setNome] = useState('');
@@ -11,22 +12,36 @@ export default function NovoTipoServico() {
   const [erro, setErro] = useState('');
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    setMensagem('');
-    setErro('');
+  e.preventDefault();
+  setMensagem('');
+  setErro('');
 
-    const { error } = await supabase.from('tipos_servico').insert([{ nome }]);
+  const { data: existente, error: erroBusca } = await supabase
+    .from('tipos_servico')
+    .select('*')
+    .ilike('nome', nome.trim());
 
-    if (error) {
-      console.error('Erro ao salvar tipo de serviço:', error);
-      setErro('❌ Erro ao salvar o tipo de serviço.');
-    } else {
-      setMensagem('✅ Tipo de serviço cadastrado com sucesso!');
-      setTimeout(() => {
-        router.push('/tipos-servico');
-      }, 2000);
-    }
+  if (erroBusca) {
+    setErro('Erro ao verificar tipos de serviço.');
+    return;
   }
+
+  if (existente.length > 0) {
+    setErro('❌ Este tipo de serviço já foi cadastrado.');
+    return;
+  }
+
+  const { error } = await supabase.from('tipos_servico').insert([{ nome: nome.trim() }]);
+
+  if (error) {
+    console.error('Erro ao salvar tipo de serviço:', error);
+    setErro('❌ Erro ao salvar o tipo de serviço.');
+  } else {
+    setMensagem('✅ Tipo de serviço cadastrado com sucesso!');
+    setNome('');
+  }
+}
+
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-md rounded-xl p-6 border border-gray-200">

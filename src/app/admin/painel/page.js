@@ -76,7 +76,7 @@ export default function PainelAdmin() {
           <button
             onClick={() => setFiltro('todos')}
             className={`px-4 py-2 rounded-full ${
-              filtro === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-100'
+              filtro === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-600'
             }`}
           >
             Todos
@@ -84,15 +84,15 @@ export default function PainelAdmin() {
           <button
             onClick={() => setFiltro('pendente')}
             className={`px-4 py-2 rounded-full ${
-              filtro === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-gray-100'
+              filtro === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-yellow-600'
             }`}
           >
             Pendentes
           </button>
           <button
-            onClick={() => setFiltro('Concluída')}
+            onClick={() => setFiltro('concluida')}
             className={`px-4 py-2 rounded-full ${
-              filtro === 'Concluída' ? 'bg-bg-green-600 text-white' : 'bg-gray-100'
+              filtro === 'concluida' ? 'bg-green-800 text-white' : 'bg-green-600'
             }`}
           >
             Concluídas
@@ -142,11 +142,11 @@ export default function PainelAdmin() {
               <p className="text-sm text-gray-600">
                 <strong>Serviço:</strong> {tarefa.tipos_servico?.nome || 'Indefinido'}
               </p>
-              <p className="text-sm font-medium mt-2">
+              <p className="text-sm text-gray-600">
                 <strong>Status:</strong>{' '}
                 <span
                   className={`px-2 py-1 rounded-full text-white text-xs ${
-                    tarefa.status === 'Concluída'
+                    tarefa.status === 'concluida'
                       ? 'bg-green-500'
                       : tarefa.status === 'pendente'
                       ? 'bg-yellow-500'

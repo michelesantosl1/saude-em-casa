@@ -36,11 +36,11 @@ export default function PaginaProfissional({ linkUnico }) {
       return;
     }
 
-    const { data: tarefas, error: erroTarefas } = await supabase
-      .from('tarefas')
-      .select('*')
-      .eq('profissional_id', profissional.id)
-      .order('data_hora', { ascending: true });
+   const { data: tarefas, error: erroTarefas } = await supabase
+  .from('tarefas')
+  .select('*, tipos_servico (nome)')
+  .eq('profissional_id', profissional.id)
+  .order('data_hora', { ascending: true });
 
     if (erroTarefas) {
       console.error('Erro ao buscar tarefas:', erroTarefas);
@@ -136,7 +136,7 @@ export default function PaginaProfissional({ linkUnico }) {
                 <div className="space-y-1 text-gray-700">
                   <p><strong>Data:</strong> {new Date(tarefa.data_hora).toLocaleString()}</p>
                   <p><strong>Local:</strong> {tarefa.local}</p>
-                  <p><strong>Serviço:</strong> {tarefa.tipo_servico || 'N/A'}</p>
+                  <p><strong>Serviço:</strong> {tarefa.tipos_servico?.nome || 'N/A'}</p>
                   <p><strong>Status atual:</strong> {tarefa.status}</p>
                 </div>
 
