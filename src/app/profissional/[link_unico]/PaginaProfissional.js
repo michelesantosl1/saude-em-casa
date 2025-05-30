@@ -80,9 +80,9 @@ export default function PaginaProfissional({ linkUnico }) {
   }
 
   return (
-    <div className="min-h-screen bg-green-500 py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-yellow-50 to-blue-50 py-10 px-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
+        <h1 className="text-3xl font-bold text-center mt-10 mb-6 text-gray-800">
           Tarefas do Profissional
         </h1>
 
@@ -91,7 +91,7 @@ export default function PaginaProfissional({ linkUnico }) {
             <button
               onClick={() => setFiltroStatus('todos')}
               className={`px-3 py-1 rounded text-sm font-medium ${
-                filtroStatus === 'todos' ? 'bg-gray-800 text-white' : 'bg-white border'
+                filtroStatus === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-600'
               }`}
             >
               Todos
@@ -99,7 +99,7 @@ export default function PaginaProfissional({ linkUnico }) {
             <button
               onClick={() => setFiltroStatus('pendente')}
               className={`px-3 py-1 rounded text-sm font-medium ${
-                filtroStatus === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-white border'
+                filtroStatus === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-yellow-600'
               }`}
             >
               Pendentes
@@ -107,7 +107,7 @@ export default function PaginaProfissional({ linkUnico }) {
             <button
               onClick={() => setFiltroStatus('concluida')}
               className={`px-3 py-1 rounded text-sm font-medium ${
-                filtroStatus === 'concluida' ? 'bg-green-600 text-white' : 'bg-white border'
+                filtroStatus === 'concluida' ? 'bg-green-800 text-white' : 'bg-green-600'
               }`}
             >
               Concluídas

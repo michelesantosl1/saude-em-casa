@@ -52,50 +52,71 @@ export default function NovoProfissional() {
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Cadastrar Novo Profissional</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          className="w-full p-2 border border-gray-300 rounded-md"
-          value={nome}
-          onChange={e => setNome(e.target.value)}
-          placeholder="Nome"
-          required
-        />
-        <input
-          className="w-full p-2 border border-gray-300 rounded-md"
-          value={telefone}
-          onChange={e => setTelefone(e.target.value)}
-          placeholder="Telefone"
-          required
-        />
-        <input
-          className="w-full p-2 border border-gray-300 rounded-md"
-          value={especialidade}
-          onChange={e => setEspecialidade(e.target.value)}
-          placeholder="Especialidade"
-          required
-        />
-        <input
-          className="w-full p-2 border border-gray-300 rounded-md"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Email"
-          type="email"
-          required
-        />
-        <input
-          className="w-full p-2 border border-gray-300 rounded-md"
-          value={senha}
-          onChange={e => setSenha(e.target.value)}
-          placeholder="Senha"
-          type="password"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white p-2 rounded-md hover:bg-green-700 transition-colors"
-        >
-          Salvar
-        </button>
-      </form>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+    <input
+      className="w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500"
+      value={nome}
+      onChange={e => setNome(e.target.value)}
+      placeholder="Digite o nome"
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+    <input
+      className="w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500"
+      value={telefone}
+      onChange={e => setTelefone(e.target.value)}
+      placeholder="Digite o telefone"
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Especialidade</label>
+    <input
+      className="w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500"
+      value={especialidade}
+      onChange={e => setEspecialidade(e.target.value)}
+      placeholder="Ex: Fisioterapia"
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+    <input
+      type="email"
+      className="w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500"
+      value={email}
+      onChange={e => setEmail(e.target.value)}
+      placeholder="exemplo@dominio.com"
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+    <input
+      type="password"
+      className="w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500"
+      value={senha}
+      onChange={e => setSenha(e.target.value)}
+      placeholder="Digite uma senha segura"
+      required
+    />
+  </div>
+
+  <button
+    type="submit"
+    className="w-full bg-green-600 text-white p-2 rounded-md hover:bg-green-700 transition-colors"
+  >
+    Salvar
+  </button>
+</form>
+
     </div>
   )
 }
