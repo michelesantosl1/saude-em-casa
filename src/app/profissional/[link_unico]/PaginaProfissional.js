@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { LogOut } from 'lucide-react';
 
 export default function PaginaProfissional({ linkUnico }) {
   const [tarefas, setTarefas] = useState([]);
@@ -36,11 +37,11 @@ export default function PaginaProfissional({ linkUnico }) {
       return;
     }
 
-   const { data: tarefas, error: erroTarefas } = await supabase
-  .from('tarefas')
-  .select('*, tipos_servico (nome)')
-  .eq('profissional_id', profissional.id)
-  .order('data_hora', { ascending: true });
+    const { data: tarefas, error: erroTarefas } = await supabase
+      .from('tarefas')
+      .select('*, tipos_servico (nome)')
+      .eq('profissional_id', profissional.id)
+      .order('data_hora', { ascending: true });
 
     if (erroTarefas) {
       console.error('Erro ao buscar tarefas:', erroTarefas);
@@ -91,7 +92,7 @@ export default function PaginaProfissional({ linkUnico }) {
             <button
               onClick={() => setFiltroStatus('todos')}
               className={`px-3 py-1 rounded text-sm font-medium ${
-                filtroStatus === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-600'
+                filtroStatus === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-600 text-white'
               }`}
             >
               Todos
@@ -99,7 +100,7 @@ export default function PaginaProfissional({ linkUnico }) {
             <button
               onClick={() => setFiltroStatus('pendente')}
               className={`px-3 py-1 rounded text-sm font-medium ${
-                filtroStatus === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-yellow-600'
+                filtroStatus === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-yellow-600 text-white'
               }`}
             >
               Pendentes
@@ -107,7 +108,7 @@ export default function PaginaProfissional({ linkUnico }) {
             <button
               onClick={() => setFiltroStatus('concluida')}
               className={`px-3 py-1 rounded text-sm font-medium ${
-                filtroStatus === 'concluida' ? 'bg-green-800 text-white' : 'bg-green-600'
+                filtroStatus === 'concluida' ? 'bg-green-800 text-white' : 'bg-green-600 text-white'
               }`}
             >
               Concluídas
@@ -174,6 +175,18 @@ export default function PaginaProfissional({ linkUnico }) {
           </p>
         )}
       </div>
+
+      {/* Botão de logout fixo */}
+      <button
+        onClick={() => {
+          localStorage.removeItem('usuario');
+          window.location.href = '/login';
+        }}
+        className="fixed top-4 right-4 z-50 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full shadow-md text-sm font-medium flex items-center gap-2"
+      >
+        <LogOut className="w-4 h-4" />
+        Sair
+      </button>
     </div>
   );
 }

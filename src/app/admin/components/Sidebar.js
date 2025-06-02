@@ -27,8 +27,12 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem('usuario'); // ou sessionStorage
+    localStorage.removeItem('usuario'); 
     router.push('/login');
+  };
+
+  const handleNavClick = () => {
+    if (window.innerWidth < 768) setIsOpen(false);
   };
 
   return (
@@ -41,11 +45,18 @@ export default function Sidebar() {
         <Menu className="w-6 h-6" />
       </button>
 
+      {/* Overlay para mobile */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black opacity-40 z-30 md:hidden"
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 bg-white h-screen w-64 border-r shadow-md transition-transform duration-300 md:static ${
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`fixed z-40 bg-white h-screen w-64 border-r shadow-md transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:block`}
       >
         <div className="flex flex-col h-full p-4">
           <div className="text-2xl font-bold mb-6 text-blue-600">Saúde em Casa</div>
@@ -53,7 +64,7 @@ export default function Sidebar() {
           {/* Menu de navegação */}
           <nav className="flex flex-col gap-2 flex-1">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} onClick={handleNavClick}>
                 <div
                   className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-blue-100 ${
                     pathname === item.href ? 'bg-blue-100 text-blue-700' : 'text-gray-700'

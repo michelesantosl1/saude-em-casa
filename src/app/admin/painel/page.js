@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { Trash } from 'lucide-react';
+import { Trash, RefreshCw } from 'lucide-react';
 
 export default function PainelAdmin() {
   const [tarefas, setTarefas] = useState([]);
@@ -11,29 +11,31 @@ export default function PainelAdmin() {
   const [loading, setLoading] = useState(true);
   const [mensagem, setMensagem] = useState('');
 
-  useEffect(() => {
-    async function carregarTarefas() {
-      const { data, error } = await supabase
-        .from('tarefas')
-        .select(`
-          id,
-          data_hora,
-          local,
-          status,
-          profissionais (id, nome, link_unico),
-          tipos_servico:tipo_servico_id (nome)
-        `)
-        .order('data_hora', { ascending: true });
+  async function carregarTarefas() {
+    setLoading(true);
 
-      if (error) {
-        console.error('Erro ao buscar tarefas:', error);
-      } else {
-        setTarefas(data);
-      }
+    const { data, error } = await supabase
+      .from('tarefas')
+      .select(`
+        id,
+        data_hora,
+        local,
+        status,
+        profissionais (id, nome, link_unico),
+        tipos_servico:tipo_servico_id (nome)
+      `)
+      .order('data_hora', { ascending: true });
 
-      setLoading(false);
+    if (error) {
+      console.error('Erro ao buscar tarefas:', error);
+    } else {
+      setTarefas(data);
     }
 
+    setLoading(false);
+  }
+
+  useEffect(() => {
     carregarTarefas();
   }, []);
 
@@ -70,13 +72,13 @@ export default function PainelAdmin() {
         Painel de Tarefas
       </h1>
 
-      {/* Filtros */}
+      {/* Filtros e botão de atualizar */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-        <div className="space-x-2 text-center">
+        <div className="flex flex-wrap gap-2 items-center">
           <button
             onClick={() => setFiltro('todos')}
             className={`px-4 py-2 rounded-full ${
-              filtro === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-600'
+              filtro === 'todos' ? 'bg-gray-800 text-white' : 'bg-gray-600 text-white'
             }`}
           >
             Todos
@@ -84,7 +86,7 @@ export default function PainelAdmin() {
           <button
             onClick={() => setFiltro('pendente')}
             className={`px-4 py-2 rounded-full ${
-              filtro === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-yellow-600'
+              filtro === 'pendente' ? 'bg-yellow-500 text-white' : 'bg-yellow-600 text-white'
             }`}
           >
             Pendentes
@@ -92,10 +94,19 @@ export default function PainelAdmin() {
           <button
             onClick={() => setFiltro('concluida')}
             className={`px-4 py-2 rounded-full ${
-              filtro === 'concluida' ? 'bg-green-800 text-white' : 'bg-green-600'
+              filtro === 'concluida' ? 'bg-green-800 text-white' : 'bg-green-600 text-white'
             }`}
           >
             Concluídas
+          </button>
+
+          {/* Botão de atualizar */}
+          <button
+            onClick={carregarTarefas}
+            className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium"
+          >
+            <RefreshCw size={16} className="animate-spin-slow" />
+            Atualizar
           </button>
         </div>
 
