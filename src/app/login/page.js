@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import bcrypt from 'bcryptjs'
-import { supabase } from '@/lib/supabaseClient'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -12,47 +10,40 @@ export default function LoginPage() {
   const router = useRouter()
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setErro('')
+  e.preventDefault()
+  setErro('')
 
-    const { data: usuario, error } = await supabase
-      .from('usuarios')
-      .select('*')
-      .eq('email', email)
-      .single()
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, senha })
+    })
 
-    if (!usuario || !usuario.senha_hash) {
-      setErro('Usuário não encontrado ou senha incorreta.')
+    const data = await res.json()
+
+    if (!res.ok) {
+      setErro(data.error || 'Erro ao fazer login.')
       return
     }
 
-    try {
-      const senhaOk = await bcrypt.compare(senha, usuario.senha_hash)
-
-      if (!senhaOk) {
-        setErro('Senha incorreta.')
-        return
-      }
-
-      localStorage.setItem('usuario', JSON.stringify(usuario))
-
-      if (usuario.tipo === 'admin') {
-        router.push('/admin')
-      } else {
-        const { data: profissional } = await supabase
-          .from('profissionais')
-          .select('link_unico')
-          .eq('id', usuario.ref_id)
-          .single()
-
-        router.push(`/profissional/${profissional.link_unico}`)
-      }
-
-    } catch (err) {
-      console.error('Erro ao comparar senha:', err)
-      setErro('Erro ao verificar a senha.')
+    // Redireciona com base na resposta da API (não tenta decodificar o token httpOnly!)
+    if (data.tipo === 'admin') {
+      router.push('/admin')
+    } else if (data.tipo === 'profissional' && data.link_unico) {
+      router.push(`/profissional/${data.link_unico}`)
+    } else {
+      setErro('Tipo de usuário inválido ou link não encontrado.')
     }
+
+  } catch (err) {
+    console.error('Erro no login:', err)
+    setErro('Erro ao fazer login. Tente novamente.')
   }
+}
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
