@@ -14,39 +14,66 @@ export default function NovoProfissional() {
   const [senha, setSenha] = useState('')
   const router = useRouter()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const link_unico = uuidv4()
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const { data: profissional, error: profError } = await supabase
-      .from('profissionais')
-      .insert([{ nome, telefone, especialidade, email, link_unico }])
-      .select()
-      .single()
+  // Verifica se o e-mail já está cadastrado na tabela `usuarios`
+  const { data: emailExistente, error: emailCheckError } = await supabase
+    .from('usuarios')
+    .select('id')
+    .eq('email', email)
+    .single();
 
-    if (profError) {
-      console.error(profError)
-      alert('Erro ao cadastrar profissional.')
-      return
-    }
-
-    const senha_hash = await bcrypt.hash(senha, 10)
-
-    const { data: userData, error: userError } = await supabase
-      .from('usuarios')
-      .insert([{ email, senha_hash, tipo: 'profissional', ref_id: profissional.id }])
-      .select()
-      .single()
-
-    if (userError) {
-      console.error('Erro ao criar login do profissional:', JSON.stringify(userError, null, 2))
-      alert('Erro ao criar login do profissional.')
-      return
-    }
-
-    alert('✅ Profissional cadastrado com sucesso!')
-    router.push('/admin/profissionais')
+  if (emailExistente) {
+    alert('❌ Já existe um profissional com esse e-mail cadastrado.');
+    return;
   }
+
+  const link_unico = uuidv4();
+
+  const { data: profissional, error: profError } = await supabase
+    .from('profissionais')
+    .insert([{ nome, telefone, especialidade, email, link_unico }])
+    .select()
+    .single();
+
+  if (profError) {
+    console.error(profError);
+    alert('Erro ao cadastrar profissional.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/enviar-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, nome, senha }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Erro ao enviar e-mail');
+  } catch (err) {
+    console.error('Erro ao enviar o e-mail:', err);
+    alert('Profissional cadastrado, mas houve um erro ao enviar o e-mail.');
+  }
+
+  const senha_hash = await bcrypt.hash(senha, 10);
+
+  const { data: userData, error: userError } = await supabase
+    .from('usuarios')
+    .insert([{ email, senha_hash, tipo: 'profissional', ref_id: profissional.id }])
+    .select()
+    .single();
+
+  if (userError) {
+    console.error('Erro ao criar login do profissional:', userError);
+    alert('Erro ao criar login do profissional.');
+    return;
+  }
+
+  alert('✅ Profissional cadastrado com sucesso!');
+  router.push('/admin/profissionais');
+};
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">

@@ -27,23 +27,49 @@ export default function ListaProfissionais() {
     setLoading(false);
   }
 
-  async function deletarProfissional(id) {
-    const confirmar = window.confirm('Tem certeza que deseja excluir este profissional?');
+async function deletarProfissional(id) {
+  const confirmar = window.confirm('Tem certeza que deseja excluir este profissional?');
 
-    if (!confirmar) return;
+  if (!confirmar) return;
 
-    const { error } = await supabase
-      .from('profissionais')
-      .delete()
-      .eq('id', id);
+  // 1. Buscar o e-mail ou ID do usuário vinculado a este profissional
+  const { data: usuario, error: erroBusca } = await supabase
+    .from('usuarios')
+    .select('id')
+    .eq('ref_id', id) // `ref_id` aponta para `profissionais.id`
+    .single();
 
-    if (error) {
-      console.error('Erro ao deletar profissional:', error);
-      alert('Erro ao deletar profissional.');
-    } else {
-      setProfissionais(profissionais.filter((prof) => prof.id !== id));
-    }
+  if (erroBusca) {
+    console.error('Erro ao buscar usuário relacionado:', erroBusca);
+    alert('Erro ao buscar usuário relacionado.');
+    return;
   }
+
+  // 2. Deletar o usuário
+  const { error: erroUsuario } = await supabase
+    .from('usuarios')
+    .delete()
+    .eq('id', usuario.id);
+
+  if (erroUsuario) {
+    console.error('Erro ao deletar usuário:', erroUsuario);
+    alert('Erro ao deletar login do profissional.');
+    return;
+  }
+
+  // 3. Deletar o profissional
+  const { error: erroProfissional } = await supabase
+    .from('profissionais')
+    .delete()
+    .eq('id', id);
+
+  if (erroProfissional) {
+    console.error('Erro ao deletar profissional:', erroProfissional);
+    alert('Erro ao deletar profissional.');
+  } else {
+    setProfissionais(profissionais.filter((prof) => prof.id !== id));
+  }
+}
 
   if (loading) {
     return (
