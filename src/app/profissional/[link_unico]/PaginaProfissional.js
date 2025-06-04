@@ -139,6 +139,9 @@ export default function PaginaProfissional({ linkUnico }) {
                   <p><strong>Local:</strong> {tarefa.local}</p>
                   <p><strong>Serviço:</strong> {tarefa.tipos_servico?.nome || 'N/A'}</p>
                   <p><strong>Status atual:</strong> {tarefa.status}</p>
+                  {tarefa.observacoes && (
+                    <p><strong>Observações:</strong> {tarefa.observacoes}</p>
+                  )}
                 </div>
 
                 <div className="mt-4 flex gap-6">
